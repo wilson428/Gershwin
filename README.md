@@ -71,11 +71,19 @@ The Python script outputs three files: Two images in the [output/images](output/
 
 Here are the command-line scripts for all five samples. (Again, depending on your system, you may need to run `python3`)
 
-+ python Generate_Frequencies.py --name=columbia --title="Columbia Symphony Orchestra"
-+ python Generate_Frequencies.py --name=philadelphia --title="Philadelphia Orchestra"
-+ python Generate_Frequencies.py --name=royal --title="Royal Philharmonic Orchestra"
-+ python Generate_Frequencies.py --name=slovak --title="Slovak National Philharmonic Orchestra"
-+ python Generate_Frequencies.py --name=langlang --title="Lang Lang"
++ `python Generate_Frequencies.py --name=columbia --title="Columbia Symphony Orchestra"`
++ `python Generate_Frequencies.py --name=philadelphia --title="Philadelphia Orchestra"`
++ `python Generate_Frequencies.py --name=royal --title="Royal Philharmonic Orchestra"`
++ `python Generate_Frequencies.py --name=slovak --title="Slovak National Philharmonic Orchestra"`
++ `python Generate_Frequencies.py --name=langlang --title="Lang Lang"`
+
+Let's compare them and see how they stack up!
+	
+	python Compare.py
+
+This writes an image called `compare.png` to the [output/images](output/images) directory and, for the sake of convenience, writes a JSON files called [`glissandos.json`](output/data/glissandos.json) to the [output/data](output/data) directory.
+
+![All Five Glissandos](./output/images/comparison.png)
 
 ## Generating waves from the data
 
@@ -83,4 +91,5 @@ To test if we did this right, we can generate `.wav` files from the outputted da
 
 	node make_wave.js --name=columbia
 
-That outputs a file to the [output/sounds](output/sounds) directory. 
+That outputs a file called `columbia.wav` to the [output/sounds](output/sounds) directory. 
+
