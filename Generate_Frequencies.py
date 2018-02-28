@@ -87,5 +87,4 @@ data_path = "./output/data/%s.csv" % name
 
 with open(data_path, "w") as csvfile:
     spamwriter = csv.writer(csvfile)
-    spamwriter.writerow(["freq"])    
     spamwriter.writerows(map(lambda x: [x], corrected))
