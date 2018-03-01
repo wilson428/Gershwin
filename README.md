@@ -65,7 +65,6 @@ To correct for the noise, I wrote a simple algorithm to guess where the outliers
 	            #print(x, i, threshold, arr[i], corrected[i-1], diff, average)
 	            corrected[i] = average
 
-
 Here's how it fixes up the Columbia output. The red dots are the corrected frequencies and the green dots are the original.
 
 ![Columbia Symphony Orchestra, Smoothed](./output/images/columbia_smoothed.png)
