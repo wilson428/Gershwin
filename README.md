@@ -17,7 +17,7 @@ You'll need Node and Python 3, which you can download directly or install via Ho
 + [Philadelphia Orchestra](https://www.youtube.com/watch?v=xWB5m3ycYg0)
 + [Royal Philharmonic Orchestra](https://www.youtube.com/watch?v=hpynmrUI4oI)
 + [Slovak National Philharmonic Orchestra](https://www.youtube.com/watch?v=ynEOo28lsbc)
-+ [Lang Lang](https://www.youtube.com/watch?v=ss2GFGMu198)
++ [London Symphony Orchestra](https://www.youtube.com/watch?v=ss2GFGMu198)
 
 ## Getting the clips
 
@@ -27,7 +27,7 @@ The [`get_audio.js`](get_audio.js) script downloads the YouTube url, extracts ju
 + `node get_audio.js --name=philadelphia --url=https://www.youtube.com/watch?v=xWB5m3ycYg0 --start=3 --end=9`
 + `node get_audio.js --name=royal --url=https://www.youtube.com/watch?v=hpynmrUI4oI --start=3 --end=8`
 + `node get_audio.js --name=slovak --url=https://www.youtube.com/watch?v=ynEOo28lsbc --start=5 --end=8`
-+ `node get_audio.js --name=langlang --url=https://www.youtube.com/watch?v=ss2GFGMu198 --start=6 --end=12`
++ `node get_audio.js --name=london --url=https://www.youtube.com/watch?v=ss2GFGMu198 --start=6 --end=12`
 
 (I cleaned up each sample in Audacity to make sure it starts right at the beginning of the glissando and ends right before the rest of the orchestra joins in)
 
@@ -75,7 +75,7 @@ Here are the command-line scripts for all five samples. (Again, depending on you
 + `python Generate_Frequencies.py --name=philadelphia --title="Philadelphia Orchestra"`
 + `python Generate_Frequencies.py --name=royal --title="Royal Philharmonic Orchestra"`
 + `python Generate_Frequencies.py --name=slovak --title="Slovak National Philharmonic Orchestra"`
-+ `python Generate_Frequencies.py --name=langlang --title="Lang Lang"`
++ `python Generate_Frequencies.py --name=london --title="London Symphony Orchestra"`
 
 Let's compare them and see how they stack up!
 	

@@ -53,23 +53,26 @@ fig.savefig(image_path, pad_inches=1, dpi=300)
 # first, identify all the outliers and move them closer to the correct position
 corrected = [pitches[0]]
 for i in range(1, len(pitches)-1):
-    diff = abs(pitches[i]-corrected[i-1])
-    if diff > 150:
+    diff = abs(pitches[i]-corrected[i-1]) / corrected[i-1]
+    if diff > 0.4:
         corrected += [corrected[i-1]]
-    elif diff > 100:
+        #print(1, i, pitches[i], corrected[i-1], diff, average)        
+    elif diff > 0.25:
         average = (corrected[i-1] + pitches[i+1]) / 2
+        #print(1, i, pitches[i], corrected[i-1], diff, average)
         corrected += [average]
     else:
         corrected += [pitches[i]]
-
+        
 # then iterate over the corrected array, gradually bringing the outliers into line
 for x in range(2,20):
     arr = corrected
     for i in range(1, len(arr)-1):
-        diff = abs(arr[i] - arr[i+1])
-        threshold =100 - 5 * x
+        diff = abs(arr[i] - arr[i+1]) / arr[i+1]
+        threshold = 1 - 0.06 * x
         if diff > threshold:
             average = (arr[i-1] + arr[i+1]) / 2
+            #print(x, i, threshold, arr[i], corrected[i-1], diff, average)
             corrected[i] = average
 
 fig = plt.figure(figsize=(12, 9), frameon=True)

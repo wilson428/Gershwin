@@ -3,7 +3,7 @@ import json
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 
-filenames = ["columbia", "philadelphia", "royal", "slovak", "langlang"]
+filenames = ["columbia", "philadelphia", "royal", "slovak", "london"]
 
 data = {}
 for filename in filenames:
