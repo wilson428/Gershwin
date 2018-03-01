@@ -44,24 +44,27 @@ To correct for the noise, I wrote a simple algorithm to guess where the outliers
 	# first, identify all the outliers and move them closer to the correct position
 	corrected = [pitches[0]]
 	for i in range(1, len(pitches)-1):
-	    diff = abs(pitches[i]-corrected[i-1])
-	    if diff > 150:
+	    diff = abs(pitches[i]-corrected[i-1]) / corrected[i-1]
+	    # if there's a huge difference, match the previous note. Otherwise, take the average.
+	    if diff > 0.4:
 	        corrected += [corrected[i-1]]
-	    elif diff > 100:
+	    elif diff > 0.25:
 	        average = (corrected[i-1] + pitches[i+1]) / 2
 	        corrected += [average]
 	    else:
 	        corrected += [pitches[i]]
-
+	        
 	# then iterate over the corrected array, gradually bringing the outliers into line
 	for x in range(2,20):
 	    arr = corrected
 	    for i in range(1, len(arr)-1):
-	        diff = abs(arr[i] - arr[i+1])
-	        threshold =100 - 5 * x
+	        diff = abs(arr[i] - arr[i+1]) / arr[i+1]
+	        threshold = 1 - 0.06 * x # the value of 0.06 was determined by pure trial-and-error. Raising causes overfitting
 	        if diff > threshold:
 	            average = (arr[i-1] + arr[i+1]) / 2
+	            #print(x, i, threshold, arr[i], corrected[i-1], diff, average)
 	            corrected[i] = average
+
 
 Here's how it fixes up the Columbia output. The red dots are the corrected frequencies and the green dots are the original.
 
