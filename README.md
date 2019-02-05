@@ -6,10 +6,14 @@ Using pitch detection to graph the opening glissando in "Rhapsody in Blue"
 George Gershwin's _Rhapsody in Blue_, which debuted in 1924, famously beginnings with a clarinet trill that launches into a [glissando](https://en.wikipedia.org/wiki/Glissando) in which the clarinets bends the pitch all the way from a low B$flat; to a high B&flat;, spanning two octaves in a continuous pitch. It's up to the clarinetist how she wants to get there--in technical terms, she chooses which easing function to apply to the tween. These scripts plot five different versions to visualize how different players attack this challenge.
 
 ## Setup
-You'll need Node and Python 3, which you can download directly or install via Homebrew. Then install the dependencies
+You'll need Node and Python 3, which you can download directly or install via Homebrew. Then install the dependencies.
 	
 	pip install -r requirements.txt #may require sudo or `pip3` depending on your setup
 	npm install
+
+You also need the [`ffmpeg` framework](https://www.ffmpeg.org/), which you can get from Homebrew on a Mac:
+
+	brew install ffmpeg
 
 ## Performances
 

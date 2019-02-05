@@ -1,9 +1,7 @@
 const fs = require('fs');
 const youtubedl = require('youtube-dl');
 const ffmpeg = require('fluent-ffmpeg');
-var argv = require('minimist')(process.argv.slice(2));
-
-argv.start = argv.start || 0;
+const argv = require('minimist')(process.argv.slice(2));
 
 if (!argv.end) {
 	console.log("enter the finish time in seconds.");
@@ -20,7 +18,18 @@ if (!argv.url) {
 	return;
 }
 
-var duration = +argv.end - +argv.start;
+let timeStampToSeconds = function(str) {
+	let seconds = 0;
+	str.split(/:/g).reverse().forEach((t, c) => {
+		seconds += +t * Math.pow(60, c);		
+	});
+	return seconds;
+}
+
+let time_start = timeStampToSeconds(argv.start || 0);
+let time_end = timeStampToSeconds(argv.end);
+
+var duration = time_end - time_start;
 
 console.log("Downloading audio...");
 
@@ -29,7 +38,7 @@ youtubedl.exec(argv.url, ['-x', '--audio-format', 'wav'], {}, function exec(err,
     var filename = output.slice(-2,-1)[0].replace("[ffmpeg] Destination: ", "");
     console.log("Clipping audio");
     ffmpeg(filename)
-		.setStartTime(+argv.start)
+		.setStartTime(time_start)
 		.setDuration(duration)
 		.output('samples/' + argv.name + '.wav')
 		.on('end', function(err) {
@@ -39,6 +48,6 @@ youtubedl.exec(argv.url, ['-x', '--audio-format', 'wav'], {}, function exec(err,
     	    }
     	})
 		.on('error', function(err){
-			console.log('error: ', +err);
+			console.log('error: ', err);
 		}).run();
 });
