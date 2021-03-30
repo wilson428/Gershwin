@@ -92,11 +92,11 @@ Here's how it fixes up the Columbia output. The orange dots are the averaged cor
 
 The Python script outputs three files: Two images in the [output/images](output/images) directory that graph the algorithm's raw output and corrected output, and a csv file in the [output/data](output/data) directory that contains the smoothed frequency for each point.
 
-At the end of the file, you'll see a loop to run through each sample. Now let's compare them and see how they stack up! You can load the `csv` files in [notebooks/Compare_Results.ipynb].
-
-This also writes an image called `comparison.png` to the [output/images](output/images) directory and, for the sake of convenience, writes a JSON files called [`glissandos.json`](output/data/glissandos.json) to the [output/data](output/data) directory.
+At the end of the file, you'll see a loop to run through each sample. Now let's compare them and see how they stack up! You can load the `csv` files in [notebooks/Compare_Results.ipynb](notebooks/Compare_Results.ipynb).
 
 ![All Six Glissandos](./output/images/comparison.png)
+
+This also writes an image called `comparison.png` to the [output/images](output/images) directory and, for the sake of convenience, writes a JSON files called [`glissandos.json`](output/data/glissandos.json) to the [output/data](output/data) directory.
 
 ## Optional: Generating Waves from the Data
 
@@ -104,4 +104,4 @@ To test if we did this right, we can generate `.wav` files from the outputted da
 
 	node makeWave.js --name=columbia
 
-That outputs a file called `columbia.wav` to the [output/sounds](output/sounds) directory. **Warning: These do not sound attractive!** They won't shatter your glasses&mdash;the frequencies are identical&mdash;but they may irritate the cat.
+That examples outputs a file called `columbia.wav` to the [output/sounds](output/sounds) directory. **Warning: These do not sound attractive!** They won't shatter your glasses&mdash;the frequencies are identical&mdash;but they may irritate the cat.
