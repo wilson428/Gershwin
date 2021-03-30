@@ -31,6 +31,7 @@ async.eachSeries(data, function(freq, callback) {
 
 	var data = Int16Array.from(sample);
 	var size = data.length * 2 // 2 bytes per sample
+
 	if (Buffer.allocUnsafe) { // Node 5+
 		var buffer = Buffer.allocUnsafe(size)
 	} else {

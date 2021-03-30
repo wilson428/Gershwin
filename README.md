@@ -3,99 +3,103 @@
 Using pitch detection to graph the opening glissando in "Rhapsody in Blue"
 
 ## Background 
-George Gershwin's _Rhapsody in Blue_, which debuted in 1924, famously beginnings with a clarinet trill that launches into a [glissando](https://en.wikipedia.org/wiki/Glissando) in which the clarinets bends the pitch all the way from a low B$flat; to a high B&flat;, spanning two octaves in a continuous pitch. It's up to the clarinetist how she wants to get there--in technical terms, she chooses which easing function to apply to the tween. These scripts plot five different versions to visualize how different players attack this challenge.
-
-## Setup
-You'll need Node and Python 3, which you can download directly or install via Homebrew. Then install the dependencies.
-	
-	pip install -r requirements.txt #may require sudo or `pip3` depending on your setup
-	npm install
-
-You also need the [`ffmpeg` framework](https://www.ffmpeg.org/), which you can get from Homebrew on a Mac:
-
-	brew install ffmpeg
+George Gershwin's _Rhapsody in Blue_, which debuted in 1924, famously beginnings with a clarinet trill that launches into a [glissando](https://en.wikipedia.org/wiki/Glissando) in which the clarinets bends the pitch all the way from the F below middle C on a piano to a high B&flat;, spanning two-and-a-half octaves in a continuous pitch. It's up to the clarinetist how she wants to get there&mdash;in technical terms, she chooses which easing function to apply to the tween. These scripts plot six different versions to visualize how different players attack this challenge.
 
 ## Performances
 
+Here are the complete performances on YouTube for six of my favorite examples:
+
 + [Columbia Symphony Orchestra (Leonard Bernstein)](https://www.youtube.com/watch?v=9aS20ojHDHg)
++ [National Symphony Orchestra (Jon Kimura Parker)](https://www.youtube.com/watch?v=HNkKjJY_ZRE)
 + [Philadelphia Orchestra](https://www.youtube.com/watch?v=xWB5m3ycYg0)
-+ [Royal Philharmonic Orchestra](https://www.youtube.com/watch?v=hpynmrUI4oI)
++ [Royal Philharmonic Orchestra](https://www.youtube.com/watch?v=U17-ZD4K4kI)
 + [Slovak National Philharmonic Orchestra](https://www.youtube.com/watch?v=ynEOo28lsbc)
 + [London Symphony Orchestra](https://www.youtube.com/watch?v=ss2GFGMu198)
 
-## Getting the clips
+## Getting and Adding Clips
+I've already extracted just the glissandos from each performance, which you can find (and tinker with if you desire) in the [samples](samples) directory. If you want to add any, just tack the YouTube URL and start and end times to [performances.json](performances.json). To download the clips, you'll need Node.js and [`ffmpeg`](https://www.ffmpeg.org/):
 
-The [`get_audio.js`](get_audio.js) script downloads the YouTube url, extracts just the portion of the audio you specify, and deletes the downloaded videos
+	npm install
+	brew install ffmpeg # for Mac users
 
-+ `node get_audio.js --name=columbia --url=https://www.youtube.com/watch?v=9aS20ojHDHg --start=3 --end=8`
-+ `node get_audio.js --name=philadelphia --url=https://www.youtube.com/watch?v=xWB5m3ycYg0 --start=3 --end=9`
-+ `node get_audio.js --name=royal --url=https://www.youtube.com/watch?v=hpynmrUI4oI --start=3 --end=8`
-+ `node get_audio.js --name=slovak --url=https://www.youtube.com/watch?v=ynEOo28lsbc --start=5 --end=8`
-+ `node get_audio.js --name=london --url=https://www.youtube.com/watch?v=ss2GFGMu198 --start=6 --end=12`
+Then, assuming you add your clip to the JSON file correctly, just run:
 
-(I cleaned up each sample in Audacity to make sure it starts right at the beginning of the glissando and ends right before the rest of the orchestra joins in)
+	node getAudio --names=[name of new performances in JSON file]
 
-## Generating the frequencies
+(Not that the `start_time` and `end_time` parameters are accurate down to 100ths of a second and may require some trial and error or zooming in with Audacity, though the Pythin script we'll be using does trim noise at the beginning. If you want to add a new clip, please generate it from the JSON file, not by hand).
 
-I would prefer to have used Node here, but the Python bindings to the [aubio toolkit](https://aubio.org/) have more sophisticated pitch detection than the leading [Node module](https://www.npmjs.com/package/node-pitchfinder), which is still working on implementing the "YIN w/ FFT" algorithm.
+## Setting up Python
+While I'm a Node.js guy, this is a good example of where Python has more mature bindings to advanced algorithms&mdash;specifically, in this case, the [YIN algorithm](http://audition.ens.fr/adc/pdf/2002_JASA_YIN.pdf) with a [Fast Fourier transform](https://en.wikipedia.org/wiki/Fast_Fourier_transform), which Python's [aubio toolkit](https://aubio.org/) provides by is still marked as "To Do" in the leading [Node module](https://www.npmjs.com/package/node-pitchfinder).
 
-The Python script [`Generate_Frequencies.py`](Generate_Frequencies.py) detects the pitch at intervals of 1024 frames. The output is very good but inevitably contains some outliers. For example, here's the raw output for the Columbia Symphony Orchestra:
+To set up the Python virtual environment, it's best to [install Miniconda](https://docs.conda.io/en/latest/miniconda.html)) and then run:
 
-![Columbia Symphony Orchestra, Raw](./output/images/columbia_raw.png)
+	conda env create --file environment.yml -n gershwin
+	conda activate gershwin
 
-To correct for the noise, I wrote a simple algorithm to guess where the outliers ought to be. It's not perfect and arguably overfits some of the time, but it's reasonably consistent across the five samples:
+This _should_ install the correct dependencies. I don't use `conda` very often so do let me know if you run into trouble. The dependencies are also in `requirements.txt`.
 
-	# first, identify all the outliers and move them closer to the correct position
-	corrected = [pitches[0]]
-	for i in range(1, len(pitches)-1):
-	    diff = abs(pitches[i]-corrected[i-1]) / corrected[i-1]
-	    # if there's a huge difference, match the previous note. Otherwise, take the average.
-	    if diff > 0.4:
-	        corrected += [corrected[i-1]]
-	    elif diff > 0.25:
-	        average = (corrected[i-1] + pitches[i+1]) / 2
-	        corrected += [average]
-	    else:
-	        corrected += [pitches[i]]
-	        
-	# then iterate over the corrected array, gradually bringing the outliers into line
-	for x in range(2,20):
-	    arr = corrected
-	    for i in range(1, len(arr)-1):
-	        diff = abs(arr[i] - arr[i+1]) / arr[i+1]
-	        threshold = 1 - 0.06 * x # the value of 0.06 was determined by pure trial-and-error. Raising causes overfitting
-	        if diff > threshold:
-	            average = (arr[i-1] + arr[i+1]) / 2
-	            #print(x, i, threshold, arr[i], corrected[i-1], diff, average)
-	            corrected[i] = average
+The Python scripts are [Jupyter notebooks](https://jupyter.org/) in the [`notebooks`](notebooks) directly, which you can fire up with `jupyter notebook` or any Python editor of your choice.
 
-Here's how it fixes up the Columbia output. The red dots are the corrected frequencies and the green dots are the original.
+## Generating the Frequencies
+I know very little about pitch detection, but of the handful of pitch-detection algorithms supported by the [`aubio.pitch` function](https://aubio.org/manual/latest/py_analysis.html?highlight=pitch#aubio.pitch), here's a comparison of the output for the sample `columbia.wav`, which you can tinker with in [notebooks/Test_Pitch_Detection.ipynb]:
 
-![Columbia Symphony Orchestra, Smoothed](./output/images/columbia_smoothed.png)
+![Comparing Algorithms](./output/compare_algorithms.png)
 
-The Python script outputs three files: Two images in the [output/images](output/images) directory that graph the algorithm's raw output and smoothed output, and a csv file in the [output/data](output/data) directory that contains the smoothed frequency for each point.
+It's pretty clear that `yinftt` (YIN with Fast Fourier) is the best bet. But none of these methods are going to produce a perfect glissando. Not only are harmonics complicated; sometimes someone in the front row coughs. So we'll wrote a fairly simple algorithm in [notebooks/Generate_Glissandos.ipynb] to rein in the outliers, under the premise that not frequency should be significantly lower than the precenting one. We'll be estimating the frequencies at a "hop size" of 1024, which, given the standard sampling frequency of 44100 Hz for, comes out to 43 data points per second. Glissandos are typyically around four seconds long.
 
-Here are the command-line scripts for all five samples. (Again, depending on your system, you may need to run `python3`)
+The Python script [`notebooks/Generate_Glissandos.ipynb`] starts with the YIN/FFT algorithm and both graphs the output, if you're using an interactive kernal like Jupyter, and writes the graph to `outputs/images/[name]_original.png`. Some initial results are better than others. For example, here's the raw output for the Columbia Symphony Orchestra:
 
-+ `python Generate_Frequencies.py --name=columbia --title="Columbia Symphony Orchestra"`
-+ `python Generate_Frequencies.py --name=philadelphia --title="Philadelphia Orchestra"`
-+ `python Generate_Frequencies.py --name=royal --title="Royal Philharmonic Orchestra"`
-+ `python Generate_Frequencies.py --name=slovak --title="Slovak National Philharmonic Orchestra"`
-+ `python Generate_Frequencies.py --name=london --title="London Symphony Orchestra"`
+![Columbia Symphony Orchestra, Raw](./output/images/columbia_original.png)
 
-Let's compare them and see how they stack up!
-	
-	python Compare.py
+To correct for the inevitable noise, I wrote a simple algorithm to guess where the outliers ought to be. It's not perfect and arguably overfits some of the time, but it's reasonably consistent across the six samples. Bear in mind that some clarinetists begin with a step-wise crawl before launching into the bend.
 
-This writes an image called `compare.png` to the [output/images](output/images) directory and, for the sake of convenience, writes a JSON files called [`glissandos.json`](output/data/glissandos.json) to the [output/data](output/data) directory.
+In short, the script uses a hyperparamter `THRESHOLD` to look for any pitch that's below the previous sample my more than a hair, than either averages that outlier with the following note, if the following note is higher than the preceding one, or just brings the outlier in line with the previous pitch:
 
-![All Five Glissandos](./output/images/comparison.png)
+	THRESHOLD = 0.001
 
-## Generating waves from the data
+	def correctPitches(pitches, name):
+	    corrected = [ ( pitch, "green" ) for pitch in pitches ]
+
+	    for i in range(1, len(corrected)):
+	        current = corrected[i][0]
+	        previous = corrected[i-1][0]
+	        diff = (previous - current) / previous
+
+	        if diff > THRESHOLD:
+	            if (i < len(corrected) - 1 and (corrected[i+1][0] - previous) / previous > THRESHOLD):
+	                average = (previous + corrected[i+1][0]) / 2
+	                #print("averaging", i, current, corrected[i+1][0], previous, diff, average)
+	                corrected[i] = ( average, "orange" )
+	            else:
+	                #print('moving up note at %s from %s to %s (%s)' % (i, current, previous, diff))                
+	                corrected[i] = ( previous, "red" )
+
+	    data_path = "../output/data/%s.csv" % name
+
+	    with open(data_path, "w") as csvfile:
+	        spamwriter = csv.writer(csvfile)
+	        spamwriter.writerow(["freq"])    
+	        spamwriter.writerows(map(lambda x: [x[0]], corrected))                        
+	        print('Wrote corrected frequencies to ../output/data/%s.csv' % name)
+	                
+	    return corrected
+
+Here's how it fixes up the Columbia output. The orange dots are the averaged corrections and the red ones are those that fall back to the previous sample.
+
+![Columbia Symphony Orchestra, Corrected](./output/images/columbia_correct.png)
+
+The Python script outputs three files: Two images in the [output/images](output/images) directory that graph the algorithm's raw output and corrected output, and a csv file in the [output/data](output/data) directory that contains the smoothed frequency for each point.
+
+At the end of the file, you'll see a loop to run through each sample. Now let's compare them and see how they stack up! You can load the `csv` files in [notebooks/Compare_Results.ipynb].
+
+This also writes an image called `comparison.png` to the [output/images](output/images) directory and, for the sake of convenience, writes a JSON files called [`glissandos.json`](output/data/glissandos.json) to the [output/data](output/data) directory.
+
+![All Six Glissandos](./output/images/comparison.png)
+
+## Optional: Generating Waves from the Data
 
 To test if we did this right, we can generate `.wav` files from the outputted data:
 
-	node make_wave.js --name=columbia
+	node makeWave.js --name=columbia
 
-That outputs a file called `columbia.wav` to the [output/sounds](output/sounds) directory. 
-
+That outputs a file called `columbia.wav` to the [output/sounds](output/sounds) directory. **Warning: These do not sound attractive!** They won't shatter your glasses&mdash;the frequencies are identical&mdash;but they may irritate the cat.

@@ -1,0 +1,40 @@
+[
+	{
+		"name": "Columbia Symphony Orchestra (Leonard Bernstein)",
+		"url": "https://www.youtube.com/watch?v=9aS20ojHDHg",
+		"filename": "columbia",
+		"start_time": 4.06,
+		"end_time": 7.0
+	},
+	{	"name": "London Symphony Orchestra",
+		"url": "https://www.youtube.com/watch?v=ss2GFGMu198",
+		"filename": "london",
+		"start_time": 7.7,
+		"end_time": 11.1
+	},
+	{
+		"name": "National Symphony Orchesta (Jon Kimura Parker)",
+		"url": "https://www.youtube.com/watch?v=HNkKjJY_ZRE",
+		"filename": "nso",
+		"start_time": 5.1,
+		"end_time": 10.5
+	},
+	{	"name": "Philadelphia Orchestra",
+		"url": "https://www.youtube.com/watch?v=xWB5m3ycYg0",
+		"filename": "philadelphia",
+		"start_time": 1.8,
+		"end_time": 7.9
+	},
+	{	"name": "Royal Philharmonic Orchestra",
+		"url": "https://www.youtube.com/watch?v=U17-ZD4K4kI",
+		"filename": "royal",
+		"start_time": 5.4,
+		"end_time": 8.9
+	},
+	{	"name": "Slovak National Philharmonic Orchestra",
+		"url": "https://www.youtube.com/watch?v=ynEOo28lsbc",
+		"filename": "slovak",
+		"start_time": 4.3,
+		"end_time": 7.7
+	}
+]

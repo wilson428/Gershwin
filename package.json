@@ -12,11 +12,10 @@
   "author": "Chris Wilson",
   "license": "MIT",
   "dependencies": {
-    "async": "^2.6.0",
-    "fluent-ffmpeg": "^2.1.2",
-    "minimist": "^1.2.0",
-    "tonegenerator": "^0.3.0",
+    "async": "^3.2.0",
+    "minimist": "^1.2.5",
+    "tonegenerator": "^0.3.2",
     "waveheader": "0.0.2",
-    "youtube-dl": "^1.12.2"
+    "youtube-dl-exec": "^1.1.3"
   }
 }
