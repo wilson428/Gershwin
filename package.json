@@ -12,7 +12,7 @@
   "author": "Chris Wilson",
   "license": "MIT",
   "dependencies": {
-    "async": "^3.2.0",
+    "async": "^3.2.2",
     "minimist": "^1.2.5",
     "tonegenerator": "^0.3.2",
     "waveheader": "0.0.2",
